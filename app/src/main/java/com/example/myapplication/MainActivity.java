@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 InputStream inputStream = null;
                 FileOutputStream save = null;
 
-                File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Ugoira");
+                File folder = new File(Environment.DIRECTORY_DCIM + "/Ugoira");
                 if(!folder.exists()){
                     folder.mkdir();
                 }
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     inputStream = new FileInputStream(new File(path));
                     String fileName = "Ugoira_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".gif";
 
-                    fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Ugoira/" + fileName;
+                    fileName = Environment.DIRECTORY_DCIM + "/Ugoira/" + fileName;
                     System.out.println(fileName);
                     save = new FileOutputStream(fileName);
 
