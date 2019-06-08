@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!permissionCheck.isCheck(this, getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE, "폴더 접근"))
                     return false;
+
                 ImageView imageView = (ImageView) item.getActionView();
                 String path = getApplicationContext().getCacheDir() + "resource.gif";
                 InputStream inputStream = null;

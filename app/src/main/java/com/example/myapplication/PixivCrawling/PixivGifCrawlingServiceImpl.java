@@ -22,7 +22,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 
 	@Override
 	public String getFileLink() throws Exception {
-		URL pixivUrl = new URL(url);
+		URL pixivUrl = new URL(parseUrl(url));
 		HttpURLConnection pixivUrlConnection = (HttpURLConnection) pixivUrl.openConnection();
 		pixivUrlConnection.setRequestMethod("GET");
 		pixivUrlConnection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64");
@@ -98,6 +98,21 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 
 	public int getDelay(){
 		return delay;
+	}
+
+	private String parseUrl(String url) {
+		String []temp = url.split("illust_id=");
+		String str = temp[1];
+		String illustId = "";
+		for(int i=0; i < str.length(); i++) {
+			if('0' <= str.charAt(i) && str.charAt(i) <= '9') {
+				illustId += str.charAt(i);
+			}
+			else break;
+		}
+
+		String ajaxLink = "https://www.pixiv.net/touch/ajax/illust/details?illust_id=" + illustId;
+		return ajaxLink;
 	}
 
 }
