@@ -3,16 +3,19 @@ package com.example.myapplication;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +30,7 @@ import com.example.myapplication.GifMaker.GifMakerImpl;
 import com.example.myapplication.GifMaker.Service.GifMaker;
 import com.example.myapplication.PixivCrawling.PixivGifCrawlingServiceImpl;
 import com.example.myapplication.PixivCrawling.Service.PixivCrawlingService;
+import com.example.myapplication.ProgressBar.LoadingProgress;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,17 +42,30 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    private LoadingProgress loadingProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        loadingProgress = LoadingProgress.getInstance();
 
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
-        if(Intent.ACTION_SEND.equals(action) && type != null){
+        System.out.println(action);
+        System.out.println(type);
 
+
+        if(Intent.ACTION_SEND.equals(action) && type != null){
+            if("text/plain".equals(type)){
+                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                System.out.println(sharedText);
+                String []Texts = sharedText.split("https");
+                EditText editText = findViewById(R.id.pixivUrl);
+                editText.setText("https" + Texts[1]);
+            }
         }
 
         ImageView imageView = findViewById(R.id.gifView);
@@ -73,11 +90,17 @@ public class MainActivity extends AppCompatActivity {
                 String path = getApplicationContext().getCacheDir() + "resource.gif";
                 InputStream inputStream = null;
                 FileOutputStream save = null;
+
+                File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Ugoira");
+                if(!folder.exists()){
+                    folder.mkdir();
+                }
+
                 try{
                     inputStream = new FileInputStream(new File(path));
                     String fileName = "Ugoira_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".gif";
 
-                    fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + fileName;
+                    fileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Ugoira/" + fileName;
                     System.out.println(fileName);
                     save = new FileOutputStream(fileName);
 
@@ -107,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(android.view.View view){
         Button button = findViewById(R.id.button);
         button.setEnabled(false);
+        loadingProgress.progressON(this, null);
 
         final Handler han = new Handler(){
             @Override
@@ -128,10 +152,13 @@ public class MainActivity extends AppCompatActivity {
                     alertMessage((String)msg.obj);
                     button.setEnabled(true);
                 }
+                loadingProgress.progressOFF();
             }
         };
 
         Thread getGif = new Thread() {
+
+            @Override
             public void run() {
                 Handler tHandler = han;
                 Message msg = Message.obtain();
@@ -141,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
                 PixivCrawlingService pixiv = new PixivGifCrawlingServiceImpl(pixivUrl);
                 Context context = getApplicationContext();
-                GifMaker gifMaker = new GifMakerImpl(30, context);
+                GifMaker gifMaker = new GifMakerImpl(50, context);
 
                 try {
                     pixiv.connect();
@@ -158,11 +185,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         getGif.start();
-        try{
-            getGif.join();
-        } catch(Exception e) {
-
-        }
     }
 
     public void alertMessage(String msg){

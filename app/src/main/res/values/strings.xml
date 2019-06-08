@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Ugoira Downloader</string>
     <string name="makeGif">Gif 변환</string>
     <string name="url">url 입력</string>
     <string name="gifImage">Gif 이미지</string>
