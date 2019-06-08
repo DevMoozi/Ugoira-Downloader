@@ -44,7 +44,6 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 						}
 						delay = Integer.parseInt(delayTime);
 						System.out.println(delay);
-						break;
 					}
 				}
 			}
