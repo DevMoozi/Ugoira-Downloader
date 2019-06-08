@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -39,6 +41,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -116,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
                     save.flush();
                     save.close();
                     inputStream.close();
+
+
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.DATA, fileName);
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/gif");
+                    getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                     System.out.println("저장 완료");
                 } catch(Exception e){
