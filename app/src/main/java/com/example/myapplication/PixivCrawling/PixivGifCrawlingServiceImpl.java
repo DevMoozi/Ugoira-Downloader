@@ -14,6 +14,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 
 	private String url;
 	private HttpURLConnection linkCon;
+	private int delay;
 
 	public PixivGifCrawlingServiceImpl(String url) {
 		this.url = url;
@@ -30,6 +31,24 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 		String line;
 		String link = "";
 		while ((line = reader.readLine()) != null) {
+			if(line.contains("delay")) {
+				String []temp = line.split(",");
+				for(String str : temp) {
+					if(str.contains("delay")) {
+						int length = str.length();
+						String delayTime = "";
+						for(int i = 0; i< length ; i++) {
+							if('0' <= str.charAt(i) && str.charAt(i) <= '9') {
+								delayTime += str.charAt(i);
+							}
+						}
+						delay = Integer.parseInt(delayTime);
+						System.out.println(delay);
+						break;
+					}
+				}
+			}
+
 			if (!line.contains("zip"))
 				continue;
 			
@@ -75,6 +94,10 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 	@Override
 	public void disconnect() {
 		linkCon.disconnect();
+	}
+
+	public int getDelay(){
+		return delay;
 	}
 
 }

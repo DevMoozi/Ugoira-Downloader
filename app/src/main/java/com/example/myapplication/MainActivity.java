@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity {
                 InputStream inputStream = null;
                 FileOutputStream save = null;
 
-                File folder = new File(Environment.DIRECTORY_DCIM + "/Ugoira");
+                File folder = new File(Environment.getExternalStorageDirectory() + "/Ugoira");
                 if(!folder.exists()){
+                    System.out.println("폴더 생성");
                     folder.mkdir();
                 }
 
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     inputStream = new FileInputStream(new File(path));
                     String fileName = "Ugoira_" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".gif";
 
-                    fileName = Environment.DIRECTORY_DCIM + "/Ugoira/" + fileName;
+                    fileName = Environment.getExternalStorageDirectory() + "/Ugoira/" + fileName;
                     System.out.println(fileName);
                     save = new FileOutputStream(fileName);
 
@@ -168,10 +169,11 @@ public class MainActivity extends AppCompatActivity {
 
                 PixivCrawlingService pixiv = new PixivGifCrawlingServiceImpl(pixivUrl);
                 Context context = getApplicationContext();
-                GifMaker gifMaker = new GifMakerImpl(50, context);
 
                 try {
                     pixiv.connect();
+                    int delay = ((PixivGifCrawlingServiceImpl) pixiv).getDelay();
+                    GifMaker gifMaker = new GifMakerImpl(delay, context);
                     gifMaker.start(pixiv.getFile());
                     gifMaker.makeGif();
                     gifMaker.finish();
