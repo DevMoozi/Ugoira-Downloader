@@ -2,22 +2,18 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import android.app.ProgressDialog;
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.AnimationDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,9 +23,9 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.example.myapplication.GifMaker.GifMakerImpl;
 import com.example.myapplication.GifMaker.Service.GifMaker;
+import com.example.myapplication.PermissionCheck.PermissionCheck;
 import com.example.myapplication.PixivCrawling.PixivGifCrawlingServiceImpl;
 import com.example.myapplication.PixivCrawling.Service.PixivCrawlingService;
 import com.example.myapplication.ProgressBar.LoadingProgress;
@@ -38,7 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,12 +42,14 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private LoadingProgress loadingProgress;
+    private PermissionCheck permissionCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         loadingProgress = LoadingProgress.getInstance();
+        permissionCheck = new PermissionCheck();
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -60,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println(action);
         System.out.println(type);
+
 
 
         if(Intent.ACTION_SEND.equals(action) && type != null){
@@ -90,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case 1:
+                if(!permissionCheck.isCheck(this, getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE, "폴더 접근"))
+                    return false;
                 ImageView imageView = (ImageView) item.getActionView();
                 String path = getApplicationContext().getCacheDir() + "resource.gif";
                 InputStream inputStream = null;
