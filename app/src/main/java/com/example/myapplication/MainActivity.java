@@ -15,11 +15,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -129,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
                     values.put(MediaStore.Images.Media.MIME_TYPE, "image/gif");
                     getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                    System.out.println("저장 완료");
+                    Toast toast = Toast.makeText(getApplicationContext(), "다운로드 완료", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM,0,0);
+                    toast.show();
                 } catch(Exception e){
                     e.printStackTrace();
                 }
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         getGif.start();
     }
 
-    public void alertMessage(String msg){
+    private void alertMessage(String msg){
         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
@@ -212,5 +216,6 @@ public class MainActivity extends AppCompatActivity {
         alert.setMessage(msg);
         alert.show();
     }
+
 
 }
