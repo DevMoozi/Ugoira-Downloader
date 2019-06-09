@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.zip.ZipInputStream;
 
 
@@ -14,10 +15,11 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 
 	private String url;
 	private HttpURLConnection linkCon;
-	private int delay;
+	private ArrayList<Integer> delay;
 
 	public PixivGifCrawlingServiceImpl(String url) {
 		this.url = url;
+		delay = new ArrayList<Integer>();
 	}
 
 	@Override
@@ -25,7 +27,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 		URL pixivUrl = new URL(parseUrl(url));
 		HttpURLConnection pixivUrlConnection = (HttpURLConnection) pixivUrl.openConnection();
 		pixivUrlConnection.setRequestMethod("GET");
-		pixivUrlConnection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64");
+		pixivUrlConnection.setRequestProperty("User-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64)");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(pixivUrlConnection.getInputStream(), "utf-8"));
 
 		String line;
@@ -42,7 +44,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 								delayTime += str.charAt(i);
 							}
 						}
-						delay = Integer.parseInt(delayTime);
+						delay.add(Integer.parseInt(delayTime));
 						System.out.println(delay);
 					}
 				}
@@ -95,7 +97,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 		linkCon.disconnect();
 	}
 
-	public int getDelay(){
+	public ArrayList<Integer> getDelay(){
 		return delay;
 	}
 

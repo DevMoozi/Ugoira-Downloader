@@ -13,16 +13,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class GifMakerImpl implements GifMaker {
 	
 	private InputStream zis;
-	private int delay;
+	private ArrayList<Integer> delay;
 	private Context context;
 	
-	public GifMakerImpl(int delay, Context context) {
+	public GifMakerImpl(ArrayList<Integer> delay, Context context) {
 		this.delay = delay;
 		this.context = context;
 	}
@@ -30,6 +31,7 @@ public class GifMakerImpl implements GifMaker {
 
 	@Override
 	public void makeGif() throws Exception {
+		int num = 0;
 		ZipEntry zipEntry = null;
 
 		OutputStream out = new FileOutputStream(
@@ -37,12 +39,12 @@ public class GifMakerImpl implements GifMaker {
 		AnimatedGifEncoder e = new AnimatedGifEncoder();
 		e.start(out);
 
-		e.setDelay(delay);
 
 		while ((zipEntry = ((ZipInputStream) zis).getNextEntry()) != null) {
+			e.setDelay(delay.get(num));
 			Bitmap next = BitmapFactory.decodeStream(zis);
-
 			e.addFrame(next);
+			num++;
 			System.out.println(zipEntry.getName());
 		}
 

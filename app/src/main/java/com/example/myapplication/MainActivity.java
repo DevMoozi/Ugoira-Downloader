@@ -188,8 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     pixiv.connect();
-                    int delay = ((PixivGifCrawlingServiceImpl) pixiv).getDelay();
-                    GifMaker gifMaker = new GifMakerImpl(delay, context);
+                    GifMaker gifMaker = new GifMakerImpl(((PixivGifCrawlingServiceImpl) pixiv).getDelay(), context);
                     gifMaker.start(pixiv.getFile());
                     gifMaker.makeGif();
                     gifMaker.finish();
