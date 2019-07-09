@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    splits {
+        abi {
+            enable true
+        }
+    }
 }
 
 dependencies {
@@ -26,4 +31,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation ('com.waynejo:androidndkgif:0.3.3')
+    implementation 'com.facebook.spectrum:spectrum-default:1.1.0+'
 }

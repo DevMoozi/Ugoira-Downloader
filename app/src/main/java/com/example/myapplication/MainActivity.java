@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -35,7 +36,9 @@ import com.example.myapplication.ProgressBar.LoadingProgress;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
 
                 ImageView imageView = (ImageView) item.getActionView();
-                String path = getApplicationContext().getCacheDir() + "resource.gif";
+                String path = getApplicationContext().getCacheDir() + "/resource.gif";
                 InputStream inputStream = null;
                 FileOutputStream save = null;
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     save.close();
                     inputStream.close();
 
-
+                    //저장후 바로 갤러리 연동
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.Images.Media.DATA, fileName);
                     values.put(MediaStore.Images.Media.MIME_TYPE, "image/gif");
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 if(((String)msg.obj).equals("Finish")){
                     ImageView imageView =  findViewById(R.id.gifView);
 
-                    Glide.with(MainActivity.this).load(getApplicationContext().getCacheDir() + "resource.gif")
+                    Glide.with(MainActivity.this).load(getApplicationContext().getCacheDir() + "/resource.gif")
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .skipMemoryCache(true)
                             .into(imageView);
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     tHandler.sendMessage(msg);
                 } catch (Exception e) {
                     msg.obj = "Ugoira 링크가 아닙니다";
+                    e.printStackTrace();
                     tHandler.sendMessage(msg);
                 }
             }
@@ -215,6 +219,5 @@ public class MainActivity extends AppCompatActivity {
         alert.setMessage(msg);
         alert.show();
     }
-
 
 }
