@@ -18,3 +18,7 @@ GIF변환 누르면 로딩되다가
 ![1567439734 (2)](https://user-images.githubusercontent.com/43311250/64486456-7a316500-d268-11e9-9e68-555fa1ba1d18.png)
 
 움짤이 완성되고 꾹 눌러서 다운로드 받으시면 됩니다.
+
+
+
+앱 다운로드 링크는 https://github.com/DevMoozi/Ugoira-Downloader/releases
