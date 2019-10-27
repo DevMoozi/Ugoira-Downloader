@@ -102,7 +102,7 @@ public class PixivGifCrawlingServiceImpl implements PixivCrawlingService {
 	}
 
 	private String parseUrl(String url) {
-		String []temp = url.split("illust_id=");
+		String []temp = url.split("artworks/");
 		String str = temp[1];
 		String illustId = "";
 		for(int i=0; i < str.length(); i++) {
