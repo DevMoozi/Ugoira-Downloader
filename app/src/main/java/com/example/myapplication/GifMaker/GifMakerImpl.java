@@ -3,31 +3,10 @@ package com.example.myapplication.GifMaker;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.os.Environment;
-import android.util.Log;
-
-
-import com.example.myapplication.Encoder.AnimatedGifEncoder;
 import com.example.myapplication.GifMaker.Service.GifMaker;
-import com.example.myapplication.ImageZipper.ImageZipper;
-import com.example.myapplication.MainActivity;
-import com.facebook.spectrum.DefaultPlugins;
-import com.facebook.spectrum.EncodedImageSink;
-import com.facebook.spectrum.EncodedImageSource;
-import com.facebook.spectrum.Spectrum;
-import com.facebook.spectrum.SpectrumResult;
-import com.facebook.spectrum.SpectrumSoLoader;
-import com.facebook.spectrum.image.EncodedImageFormat;
-import com.facebook.spectrum.image.ImageSize;
-import com.facebook.spectrum.logging.SpectrumLogcatLogger;
-import com.facebook.spectrum.options.TranscodeOptions;
-import com.facebook.spectrum.requirements.EncodeRequirement;
-import com.facebook.spectrum.requirements.ResizeRequirement;
 import com.waynejo.androidndkgif.GifEncoder;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,9 +29,13 @@ public class GifMakerImpl implements GifMaker {
 	
 
 	@Override
-	public void makeGif() throws Exception {
+	public void makeGif(String setting) throws Exception {
 		int num = 0;
 		ZipEntry zipEntry = null;
+
+		GifEncoder.EncodingType encodingType = null;
+		if("mobile".equals(setting)) encodingType = GifEncoder.EncodingType.ENCODING_TYPE_SIMPLE_FAST;
+		else if("highQuality".equals(setting)) encodingType = GifEncoder.EncodingType.ENCODING_TYPE_STABLE_HIGH_MEMORY;
 
 
 		GifEncoder gifEncoder = new GifEncoder();
@@ -61,20 +44,12 @@ public class GifMakerImpl implements GifMaker {
 			Bitmap next = BitmapFactory.decodeStream(zis);
 
 			if(num == 0){
-				gifEncoder.init(next.getWidth(), next.getHeight(), context.getCacheDir() + "/resource.gif", GifEncoder.EncodingType.ENCODING_TYPE_SIMPLE_FAST);
+				gifEncoder.init(next.getWidth(), next.getHeight(), context.getCacheDir() + "/resource.gif", encodingType);
 			}
 			gifEncoder.encodeFrame(next, delay.get(num));
-			//e.addFrame(next);
 			num++;
 			System.out.println(zipEntry.getName());
 		}
-
-//		mSpectrum.transcode(
-//				EncodedImageSource.from(new File(context.getCacheDir() + "/resource1.gif")),
-//				EncodedImageSink.from(new File(context.getCacheDir() + "/resource.gif")),
-//				TranscodeOptions.Builder(new EncodeRequirement(EncodedImageFormat.PNG, 80, EncodeRequirement.Mode.LOSSY)).build(),
-//				"my_callsite_identifier"
-//		);
 
 		gifEncoder.close();
 	}
